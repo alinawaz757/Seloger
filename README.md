@@ -16,7 +16,8 @@
   there is also the filter ability for certain categories like villa, studio etc
   
   
-  
+## Install Dump file
+ Restore dump file using mongoeb restore to have project working
   
 ## note:
  it will be appreciated if anyone want to share some suggessions about this project to make it better..
