@@ -6,12 +6,11 @@ import "./productDetail.css";
 const ProductDetail = () => {
   const [data, setData] = useState({});
   const params = useParams()
-  console.log(params)
+  
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await axios.get("http://localhost:8080/api/categories");
       const filteredData = data.find((obj) => obj._id === params.id);
-      console.log(filteredData)
       setData(filteredData);
     };
     fetchData();

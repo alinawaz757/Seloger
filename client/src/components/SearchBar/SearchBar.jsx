@@ -5,11 +5,12 @@ import "./searchbar.css";
 const SearchBar = ({ data }) => {
   const [search, setSearch] = React.useState("");
   const navigate = useNavigate();
+
+  
+
   const onSearch = () => {
     const filteredData = data.find((obj) => obj.listing_url === search);
-    console.log(typeof filteredData);
     try {
-      console.log("search", filteredData);
       navigate(`/item/${filteredData._id}`);
       return null;
     } catch (err) {
@@ -20,15 +21,19 @@ const SearchBar = ({ data }) => {
   return (
     <div className="container">
       <div
-        style={{ display: "flex", justifyContent: "flex-start", width: "60%" }}
+        style={{ display: "flex", justifyContent: "flex-start", width: "60%",marginTop:"50px" }}
       >
         <h1
-          style={{ color: "blue", cursor: "pointer" }}
-          onClick={() => navigate("/")}
+          style={{
+            width: "100%",
+            textAlign: "center",
+            fontSize: "50px",
+            textShadow: "4px 4px 5px purple",
+            color: "yellow",
+          }}
         >
-          Home
+          Type to search
         </h1>
-        <h1 style={{ width: "80%", textAlign: "center",fontSize:"50px",textShadow:"4px 4px 5px purple", color:"yellow" }}>Type to search</h1>
       </div>
       <div className="input-container">
         <input

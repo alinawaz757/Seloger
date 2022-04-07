@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import SampleProducts from "./components/SampleProducts/SampleProducts";
 import axios from "axios";
 import FilterProducts from "./components/FilterProducts/FilterProducts";
+import NavBar from "./components/NavBar";
 
 const App = () => {
   const [data, setData] = useState([]);
@@ -19,8 +20,8 @@ const App = () => {
 
   return (
     <BrowserRouter>
+      <NavBar />
       <SearchBar data={data} />
-
       <Routes>
         <Route
           path="/"
