@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
 import SampleProducts from "./components/SampleProducts/SampleProducts";
 import axios from "axios";
 import FilterProducts from "./components/FilterProducts/FilterProducts";
-import NavBar from "./components/NavBar";
+import NavBar from "./components/NavBAr/NavBar";
+import User from "./components/user/user";
+import Form from "./components/Form/Form";
 
 const App = () => {
   const [data, setData] = useState([]);
@@ -32,6 +34,8 @@ const App = () => {
             </>
           }
         />
+        <Route path="/user/:userid" element={<User />} />
+        <Route path="/create" element={<Form />} />
         <Route path="/notfound" element={<h1>Not Found</h1>} />
         <Route path="/item/:id" exact element={<ProductDetail />} />
       </Routes>

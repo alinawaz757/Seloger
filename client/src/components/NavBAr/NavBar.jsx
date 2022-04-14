@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import {default as api} from "../store/apiSlice";
+
 const NavBar = () => {
   const [isSignedIn, setIsSignedIn] = useState(null);
+  const [addUser] = api.useAddUserMutation()
   useEffect(() => {
     window.gapi.load(
       "client:auth2",
@@ -27,7 +30,19 @@ const NavBar = () => {
     window.gapi.auth2
       .getAuthInstance()
       .signIn()
-      .then((res) => console.log(res));
+      .then((res) => {
+        let user = res.getBasicProfile()
+        const userObject = {name:user.getName(),email:user.getEmail()}
+        addUser(userObject).then(({data})=>{
+          if(data.message){
+            console.log(data.message)
+            localStorage.setItem("name",user.getName())
+            console.log(localStorage.getItem("name"))
+            return 
+          }
+          console.log("user created",data)
+        })
+      });
   };
 
   const logout = () => {
