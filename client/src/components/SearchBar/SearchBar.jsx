@@ -6,8 +6,6 @@ const SearchBar = ({ data }) => {
   const [search, setSearch] = React.useState("");
   const navigate = useNavigate();
 
-  
-
   const onSearch = () => {
     const filteredData = data.find((obj) => obj.listing_url === search);
     try {
@@ -21,7 +19,12 @@ const SearchBar = ({ data }) => {
   return (
     <div className="container">
       <div
-        style={{ display: "flex", justifyContent: "flex-start", width: "60%",marginTop:"50px" }}
+        style={{
+          display: "flex",
+          justifyContent: "flex-start",
+          width: "100%",
+          marginTop: "50px",
+        }}
       >
         <h1
           style={{
@@ -42,7 +45,15 @@ const SearchBar = ({ data }) => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <button onClick={onSearch}>Search</button>
+        <button
+          style={{
+            width: "200px",
+            marginTop:"20px"
+          }}
+          onClick={onSearch}
+        >
+          Search
+        </button>
       </div>
       <div style={{ width: "100%" }}></div>
     </div>

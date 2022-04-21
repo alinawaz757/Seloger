@@ -1,52 +1,47 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import {default as api} from "../store/apiSlice";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { default as api } from "../store/apiSlice";
+import { useSnackbar } from "notistack";
+import useLocalStorage from "../utils/useLocalStorage";
 
-const NavBar = () => {
-  const [isSignedIn, setIsSignedIn] = useState(null);
-  const [addUser] = api.useAddUserMutation()
-  useEffect(() => {
-    window.gapi.load(
-      "client:auth2",
-      () => {
-        window.gapi.client.init({
-            clientId:
-              "1087669028902-afkns6qrjqrln9kocnvbtbp63c2vdjuj.apps.googleusercontent.com",
-            scope: "email",
-          }).then((err) => {
-            if(err) return err;
-            const authenticate = window.gapi.auth2.getAuthInstance();
-            setIsSignedIn(authenticate.isSignedIn.get());
-            authenticate.isSignedIn.listen(onAuthChange);
-          });
-      }
-    );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[isSignedIn]);
-  const onAuthChange = () => {
-    setIsSignedIn(!isSignedIn);
-  };
+const NavBar = ({ isSignedIn }) => {
+  const [id, setId] = useLocalStorage("id");
+  const [addUser] = api.useAddUserMutation();
+
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
   const login = () => {
     window.gapi.auth2
       .getAuthInstance()
       .signIn()
       .then((res) => {
-        let user = res.getBasicProfile()
-        const userObject = {name:user.getName(),email:user.getEmail()}
-        addUser(userObject).then(({data})=>{
-          if(data.message){
-            console.log(data.message)
-            localStorage.setItem("name",user.getName())
-            console.log(localStorage.getItem("name"))
-            return 
+        let user = res.getBasicProfile();
+        const userObject = { name: user.getName(), email: user.getEmail() };
+        addUser(userObject).then(({ data }) => {
+          if (data.message) {
+            console.log(data.message);
+            setId(data._id);
+            console.log("id", id);
+            navigate(`/users/${data._id}`);
+            enqueueSnackbar("Logged In Successfully");
+
+            return;
           }
-          console.log("user created",data)
-        })
+          console.log("user created", data);
+          setId(data._id);
+          navigate(`/users/${data._id}`);
+        });
       });
   };
 
   const logout = () => {
     window.gapi.auth2.getAuthInstance().signOut();
+    localStorage.clear("name");
+    enqueueSnackbar("Logged Out Successfully");
+    navigate("/");
+  };
+  const getItems = () => {
+    navigate(`/users/${id}`);
   };
   return (
     <div
@@ -58,29 +53,57 @@ const NavBar = () => {
         borderBottom: "2px solid RGB(1,90,232)",
         boxShadow: "2px 2px 20px gray",
         position: "fixed",
-        width: "100vw",
+        width: "100%",
         top: "0",
       }}
     >
-      <Link to="/">
-        <button style={{ width: "100px", fontSize: "20px", padding: "8px" }}>
-          Home
-        </button>
-      </Link>
-      {isSignedIn ? (
-        <button
-          style={{ width: "100px", fontSize: "20px", padding: "8px" }}
-          onClick={() => logout()}
-        >
-          Logout
-        </button>
+      {isSignedIn === undefined ? (
+        ""
+      ) : isSignedIn ? (
+        <>
+          <Link to="/">
+            <button
+              style={{ width: "100px", fontSize: "20px", padding: "8px" }}
+            >
+              Home
+            </button>
+          </Link>
+          <span>
+            <button
+              style={{ width: "100px", fontSize: "20px", padding: "8px" }}
+              onClick={() => logout()}
+            >
+              Logout
+            </button>
+            <button
+              style={{
+                width: "100px",
+                fontSize: "20px",
+                padding: "8px",
+                marginLeft: "12px",
+              }}
+              onClick={() => getItems()}
+            >
+              Items
+            </button>
+          </span>
+        </>
       ) : (
-        <button
-          style={{ width: "100px", fontSize: "20px", padding: "8px" }}
-          onClick={() => login()}
-        >
-          Login
-        </button>
+        <>
+          <Link to="/">
+            <button
+              style={{ width: "100px", fontSize: "20px", padding: "8px" }}
+            >
+              Home
+            </button>
+          </Link>
+          <button
+            style={{ width: "100px", fontSize: "20px", padding: "8px" }}
+            onClick={() => login()}
+          >
+            Login
+          </button>
+        </>
       )}
     </div>
   );

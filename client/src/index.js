@@ -2,13 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { store } from "./components/store/store";
+import { SnackbarProvider } from 'notistack';
+
 import App from './App';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
+  <Provider store={store}>
+    <SnackbarProvider>
       <App />
-    </Provider>
-  </React.StrictMode>,
+    </SnackbarProvider>
+  </Provider>,
   document.getElementById('root')
 );

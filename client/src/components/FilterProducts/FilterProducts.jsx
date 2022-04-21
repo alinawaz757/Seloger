@@ -5,39 +5,51 @@ const FilterProducts = ({ setFilterby }) => {
     setFilterby(e.target.value);
   };
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        margin: "auto",
-        marginTop: "30px",
-        width: "80%",
-      }}
-    >
+    <div style={{display:"flex",alignItems:"center",justifyContent:"space-evenly",marginTop:"20px"}}>
       <h2>Filter By: </h2>
-      <div
-        onClick={onRadioChange}
-        style={{
-          display: "flex",
-          justifyContent: "space-evenly",
-          width: "80%",
-          marginTop: "5px",
-        }}
-      >
+      <div  style={{width:"60%",display:"flex",justifyContent:"space-between"}}>
         <span>
-          <input type="radio" value="" name="Seloger" /> All
+          <input type="radio" value="" name="Seloger" className="radio" onClick={onRadioChange} />
+          All
         </span>
         <span>
-          <input type="radio" value="Appartement" name="Seloger" /> Appartement
+          <input
+            type="radio"
+            value="Appartement"
+            name="Seloger"
+            className="radio"
+            onClick={onRadioChange}
+          />
+          Appartement
         </span>
         <span>
-          <input type="radio" value="Villa" name="Seloger" /> Villa
+          <input
+            type="radio"
+            value="Villa"
+            name="Seloger"
+            className="radio"
+            onClick={onRadioChange}
+          />
+            Villa
         </span>
         <span>
-          <input type="radio" value="Studio" name="Seloger" /> Studio
+          <input
+            type="radio"
+            value="Studio"
+            name="Seloger"
+            className="radio"
+            onClick={onRadioChange}
+          />
+            Studio
         </span>
         <span>
-          <input type="radio" value="Maison/Villa" name="Seloger" />{" "}
+          <input
+            type="radio"
+            value="Maison/Villa"
+            name="Seloger"
+            className="radio"
+            onClick={onRadioChange}
+          />
           Maison/Villa
         </span>
       </div>

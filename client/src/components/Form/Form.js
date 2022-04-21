@@ -1,16 +1,50 @@
-import React from "react";
+import { useSnackbar } from "notistack";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
+import { HOC } from "../HOC/HOC";
+import { default as api } from "../store/apiSlice";
+import { ID, isValidHttpUrl } from "../utils";
+
+
 
 const Form = () => {
-  const { register, handleSubmit } = useForm();
+  const [images, setImages] = useState([])
+  const { register, handleSubmit, reset } = useForm();
+  const [addItem] = api.useAddItemMutation()
+  const { enqueueSnackbar } = useSnackbar();
+  const { userid } = useParams()
+
   const onFormSubmit = (data) => {
-    const {specification, images,...formValues} = data;
+    let id= ID()
+    const { specification, images, ...formValues } = data;
     const specArray = specification.split(",");
     const imagesArray = images.split(",")
-    const create = {...formValues, specification:specArray, images:imagesArray}
-    console.log(create)
+    const create = { ...formValues, specification: specArray, images: imagesArray, _id:id }
+    console.log("create", create)
+    addItem({ id: userid, ...create })
+    enqueueSnackbar("Form Submitted Successfully");
+    reset()
+    setImages([])
   };
 
+  const fetchUrlsFromInput = e => {
+    if (e.target.value === "") return setImages([])
+    const fetchUrls = e.target.value.split(",")
+    setImages(fetchUrls)
+
+  }
+  const renderImages = () => {
+    return images.map((url, i) => {
+      if (isValidHttpUrl(url) === false) return null;
+      return <img
+        src={url}
+        alt=""
+        key={i}
+        style={{ maxHeight: "200px", width: "100%" }}
+      />
+    })
+  }
   return (
     <div
       style={{
@@ -44,7 +78,7 @@ const Form = () => {
           <input
             type="text"
             style={{ textAlign: "start" }}
-            {...register("lastName", { required: true })}
+            {...register("name", { required: true })}
           />
         </span>
         <span style={{ display: "flex", flexDirection: "column" }}>
@@ -56,7 +90,7 @@ const Form = () => {
           <input
             type="number"
             style={{ textAlign: "start" }}
-            {...register("price",{ required: true })}
+            {...register("price", { required: true })}
           />
         </span>
         <span style={{ display: "flex", flexDirection: "column" }}>
@@ -68,7 +102,7 @@ const Form = () => {
           <input
             type="text"
             style={{ textAlign: "start" }}
-            {...register("listingUrl",{ required: true })}
+            {...register("listingUrl")}
           />
         </span>
         <span style={{ display: "flex", flexDirection: "column" }}>
@@ -80,9 +114,9 @@ const Form = () => {
           <input
             type="text"
             style={{ textAlign: "start" }}
-            {...register("specification",{ required: true })}
+            {...register("specification")}
           />
-          <p style={{ marginTop: "-10px" }}>Note:separate with comma</p>
+          <p style={{ margin:"5px 0" }}>Note:separate with comma</p>
         </span>
         <span style={{ display: "flex", flexDirection: "column" }}>
           <label
@@ -93,9 +127,14 @@ const Form = () => {
           <input
             type="text"
             style={{ textAlign: "start" }}
-            {...register("images",{ required: true })}
+            {...register("images", { required: true })}
+            onChange={e => fetchUrlsFromInput(e)}
+
           />
-          <p style={{ marginTop: "-10px" }}>Note:separate with comma</p>
+          <p style={{ margin:"5px 0" }}>Note:separate with comma</p>
+          <div style={{ display: "grid",gridTemplateColumns:"repeat(4,1fr)",gridGap:"10px",margin:"10px 0" }}>
+            {renderImages()}
+          </div>
         </span>
         <button style={{ marginTop: "20px" }} type="submit">
           Submit
@@ -105,4 +144,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default HOC(Form);

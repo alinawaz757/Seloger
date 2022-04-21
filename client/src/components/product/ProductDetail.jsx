@@ -5,13 +5,20 @@ import "./productDetail.css";
 
 const ProductDetail = () => {
   const [data, setData] = useState({});
-  const params = useParams()
-  
+  const params = useParams();
+
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await axios.get("http://localhost:8080/api/categories");
       const filteredData = data.find((obj) => obj._id === params.id);
-      setData(filteredData);
+      if (filteredData !== undefined) return setData(filteredData);
+      if (filteredData === undefined) {
+        const { data } = await axios.get(
+          `http://localhost:8080/api/items/${params.id}`
+        );
+
+        if (data !== undefined) setData(data[0]);
+      }
     };
     fetchData();
   }, [params]);
@@ -49,25 +56,27 @@ const ProductDetail = () => {
           >
             Images
           </h1>
-          {data?.images.map((url) => {
-            return (
-              <span
-                key={url}
-                style={{
-                  margin: "auto",
-                  marginBottom: "10px",
-                  marginTop: "10px",
-                }}
-              >
-                <img
-                  key={url}
-                  src={url}
-                  alt=""
-                  style={{ display: "flex", height: "300px", width: "350px" }}
-                />
-              </span>
-            );
-          })}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:"repeat(4,1fr)",
+              
+              gridGap:"10px",
+              margin:"20px 8px 20px 8px"
+            }}
+          >
+            {data?.images.map((url) => {
+              return (
+                <span key={url} style={{maxHeight:"200px"}}>
+                  <img
+                    src={url}
+                    alt=""
+                    style={{width:"100%"}}
+                  />
+                </span>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
